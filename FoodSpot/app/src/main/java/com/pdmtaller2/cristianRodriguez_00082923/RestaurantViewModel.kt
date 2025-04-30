@@ -1,8 +1,8 @@
 package com.pdmtaller2.cristianRodriguez_00082923
 
 import androidx.lifecycle.ViewModel
-import com.pdmtaller2.cristianRodriguez_00082923.components.Dish
-import com.pdmtaller2.cristianRodriguez_00082923.components.Restaurant
+import com.pdmtaller2.cristianRodriguez_00082923.data.Dish
+import com.pdmtaller2.cristianRodriguez_00082923.data.Restaurant
 
 class RestaurantViewModel : ViewModel() {
 

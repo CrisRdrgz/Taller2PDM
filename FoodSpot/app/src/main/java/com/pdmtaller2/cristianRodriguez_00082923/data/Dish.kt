@@ -1,4 +1,4 @@
-package com.pdmtaller2.cristianRodriguez_00082923.components
+package com.pdmtaller2.cristianRodriguez_00082923.data
 
 data class Dish(
     val id: Int,

@@ -1,99 +1,64 @@
 package com.pdmtaller2.cristianRodriguez_00082923.screen
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.unit.sp
 import com.pdmtaller2.cristianRodriguez_00082923.RestaurantViewModel
-import com.pdmtaller2.cristianRodriguez_00082923.components.Dish
+import com.pdmtaller2.cristianRodriguez_00082923.components.DishItem
 
 @Composable
-fun MenuScreen(
-    restaurantId: Int,
-    viewModel: RestaurantViewModel = viewModel()
-) {
-    val restaurant = viewModel.restaurants.find { it.id == restaurantId }
-    val context = LocalContext.current
+fun MenuScreen(restaurantId: Int) {
+    val restaurant = RestaurantViewModel().restaurants.find { it.id == restaurantId }
+    var query by remember { mutableStateOf("") }
 
-    if (restaurant == null) {
-        Text(text = "No se encontro el restaurante")
-        return
+    val filteredMenu = remember(restaurant, query) {
+        if (query.isBlank()) {
+            restaurant?.menu
+        } else {
+            restaurant?.menu?.filter { it.name.contains(query, ignoreCase = true) }
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = restaurant.name,
+            text = restaurant?.name ?: "Restaurante no encontrado",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = restaurant.description,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
+            fontWeight = FontWeight.Bold
         )
 
-        LazyColumn {
-            items(restaurant.menu.size) { index ->
-                DishItem(
-                    dish = restaurant.menu[index],
-                    onAddToCart = {
-                        Toast.makeText(context, "${restaurant.menu[index].name} agregado al carrito", Toast.LENGTH_SHORT).show()
-                    }
-                )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = restaurant?.description ?: "",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        OutlinedTextField(
+            value = query,
+            onValueChange = { query = it },
+            label = { Text("Buscar plato") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(modifier = Modifier.fillMaxSize()) {
+            filteredMenu?.forEach { dish ->
+                DishItem(dish)
+                Spacer(modifier = Modifier.height(12.dp))
             }
-        }
-    }
-}
-
-@Composable
-fun DishItem(
-    dish: Dish,
-    onAddToCart: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp)
-    ) {
-        Image(
-            painter = rememberAsyncImagePainter(dish.imageURL),
-            contentDescription = dish.name,
-            modifier = Modifier
-                .height(150.dp)
-                .fillMaxWidth()
-                .clickable { onAddToCart() },
-            contentScale = ContentScale.Crop
-        )
-        Text(
-            text = dish.name,
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-        Text(
-            text = dish.description,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-        Button(
-            onClick = { onAddToCart() },
-            modifier = Modifier.padding(top = 8.dp)
-        ) {
-            Text("Agregar al carrito")
         }
     }
 }

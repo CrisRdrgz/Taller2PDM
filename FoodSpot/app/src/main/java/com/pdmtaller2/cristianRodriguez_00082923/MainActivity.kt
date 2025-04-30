@@ -3,39 +3,21 @@ package com.pdmtaller2.cristianRodriguez_00082923
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.pdmtaller2.cristianRodriguez_00082923.ui.layout.AppLayout
 import com.pdmtaller2.cristianRodriguez_00082923.ui.theme.FoodSpotTheme
-import com.pdmtaller2.cristianRodriguez_00082923.navigation.FoodSpotNavigation
 
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            FoodSpotNavigation()
+            FoodSpotTheme {
+                AppLayout()
             }
         }
     }
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FoodSpotTheme {
-        Greeting("Android")
-    }
-}
+
+
